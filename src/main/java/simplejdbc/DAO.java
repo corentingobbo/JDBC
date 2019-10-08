@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -91,7 +93,32 @@ public class DAO {
 	 * @throws DAOException
 	 */
 	CustomerEntity findCustomer(int customerID) throws DAOException {
-		throw new UnsupportedOperationException("Pas encore implémenté");
+                String req = "SELECT * FROM APP.CUSTOMER WHERE CUSTOMER_ID = ?";            
+                String name = "";
+                String loc = "";
+		try (Connection connection = myDataSource.getConnection(); // Ouvrir une connexion
+                        PreparedStatement stmt = connection.prepareStatement(req)) {
+			// Définir la valeur du paramètre
+			stmt.setInt(1, customerID);
+                        
+                        ResultSet rs = stmt.executeQuery();
+                        
+                    if (rs.next()) {
+                        name = rs.getString("NAME");
+                        loc = rs.getString("ADDRESSLINE1");
+                        
+                    }
+
+	
+
+		} catch (SQLException ex) {
+			Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+			throw new DAOException(ex.getMessage());
+		}
+
+                
+                return new CustomerEntity(customerID, name, loc);
+                
 	}
 
 	/**
@@ -102,7 +129,34 @@ public class DAO {
 	 * @throws DAOException
 	 */
 	List<CustomerEntity> customersInState(String state) throws DAOException {
-		throw new UnsupportedOperationException("Pas encore implémenté");
-	}
+                List<CustomerEntity> list ;
+		String req = "SELECT * FROM APP.CUSTOMER WHERE STATE = '?'";
+                
+                try (Connection connection = myDataSource.getConnection(); // Ouvrir une connexion
+                        PreparedStatement stmt = connection.prepareStatement(req)) {
+			// Définir la valeur du paramètre
+			stmt.setString(1, state);
+                        list = new ArrayList<CustomerEntity>();
+                        
+                        ResultSet rs = stmt.executeQuery();
+                        
+                        while (rs.next()){
+                            int id = rs.getInt("CUSTOMER_ID");
+                            list.add(findCustomer(id));                    
+                        }
+                        
+                        return list;
 
-}
+		} catch (SQLException ex) {
+			Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+			throw new DAOException(ex.getMessage());
+		}
+                
+
+	}
+        
+
+         
+    }
+
+
