@@ -130,7 +130,7 @@ public class DAO {
 	 */
 	List<CustomerEntity> customersInState(String state) throws DAOException {
                 List<CustomerEntity> list ;
-		String req = "SELECT * FROM APP.CUSTOMER WHERE STATE = '?'";
+		String req = "SELECT * FROM APP.CUSTOMER WHERE STATE = ?";
                 
                 try (Connection connection = myDataSource.getConnection(); // Ouvrir une connexion
                         PreparedStatement stmt = connection.prepareStatement(req)) {
