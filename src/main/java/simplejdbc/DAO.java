@@ -94,7 +94,7 @@ public class DAO {
                         ResultSet rs = stmt.executeQuery();
                         
                     if (rs.next()) {
-                        nb = rs.getInt("QUANTITY")
+                        nb = rs.getInt("QUANTITY");
                         
                     }
 
