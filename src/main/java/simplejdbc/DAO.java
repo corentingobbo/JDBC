@@ -82,7 +82,7 @@ public class DAO {
 	 * @throws DAOException
 	 */
 	public int numberOfOrdersForCustomer(int customerId) throws DAOException {
-		String req = "SELECT COUNT(*) FROM APP.PURCHASE_ORDER WHERE CUSTOMER_ID = ?";   
+		String req = "SELECT COUNT(*) AS NUMBER FROM APP.PURCHASE_ORDER WHERE CUSTOMER_ID = ?";   
                 
                 int nb = 0;
                 
@@ -94,7 +94,7 @@ public class DAO {
                         ResultSet rs = stmt.executeQuery();
                         
                     if (rs.next()) {
-                        nb = rs.getInt("QUANTITY");
+                        nb = rs.getInt("NUMBER");
                         
                     }
 
