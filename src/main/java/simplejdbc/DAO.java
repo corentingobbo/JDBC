@@ -82,7 +82,32 @@ public class DAO {
 	 * @throws DAOException
 	 */
 	public int numberOfOrdersForCustomer(int customerId) throws DAOException {
-		throw new UnsupportedOperationException("Pas encore implémenté");
+		String req = "SELECT COUNT(*) FROM APP.PURCHASE_ORDER WHERE CUSTOMER_ID = ?";   
+                
+                int nb = 0;
+                
+                try (Connection connection = myDataSource.getConnection(); // Ouvrir une connexion
+                        PreparedStatement stmt = connection.prepareStatement(req)) {
+			// Définir la valeur du paramètre
+			stmt.setInt(1, customerId);
+                        
+                        ResultSet rs = stmt.executeQuery();
+                        
+                    if (rs.next()) {
+                        nb = rs.getInt("QUANTITY")
+                        
+                    }
+
+	
+
+		} catch (SQLException ex) {
+			Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
+			throw new DAOException(ex.getMessage());
+		}
+
+                
+                return nb;
+                
 	}
 
 	/**
