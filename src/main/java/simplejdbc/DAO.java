@@ -91,15 +91,12 @@ public class DAO {
 			// Définir la valeur du paramètre
 			stmt.setInt(1, customerId);
                         
-                        ResultSet rs = stmt.executeQuery();
+                        try(ResultSet rs = stmt.executeQuery();){
+                            if (rs.next()) {
+                                nb = rs.getInt("NUMBER");
                         
-                    if (rs.next()) {
-                        nb = rs.getInt("NUMBER");
-                        
-                    }
-
-	
-
+                            }
+                        }
 		} catch (SQLException ex) {
 			Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
 			throw new DAOException(ex.getMessage());
@@ -121,20 +118,19 @@ public class DAO {
                 String req = "SELECT * FROM APP.CUSTOMER WHERE CUSTOMER_ID = ?";            
                 String name = "";
                 String loc = "";
+                
 		try (Connection connection = myDataSource.getConnection(); // Ouvrir une connexion
                         PreparedStatement stmt = connection.prepareStatement(req)) {
 			// Définir la valeur du paramètre
 			stmt.setInt(1, customerID);
                         
-                        ResultSet rs = stmt.executeQuery();
-                        
-                    if (rs.next()) {
-                        name = rs.getString("NAME");
-                        loc = rs.getString("ADDRESSLINE1");
-                        
-                    }
+                        try(ResultSet rs = stmt.executeQuery()){
+                            if (rs.next()) {
+                                name = rs.getString("NAME");
+                                loc = rs.getString("ADDRESSLINE1");
+                            }
+                        }
 
-	
 
 		} catch (SQLException ex) {
 			Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
@@ -154,29 +150,27 @@ public class DAO {
 	 * @throws DAOException
 	 */
 	List<CustomerEntity> customersInState(String state) throws DAOException {
-                List<CustomerEntity> list ;
+                List<CustomerEntity> list = new ArrayList<CustomerEntity>() ;
 		String req = "SELECT * FROM APP.CUSTOMER WHERE STATE = ?";
-                
+
                 try (Connection connection = myDataSource.getConnection(); // Ouvrir une connexion
                         PreparedStatement stmt = connection.prepareStatement(req)) {
 			// Définir la valeur du paramètre
 			stmt.setString(1, state);
-                        list = new ArrayList<CustomerEntity>();
                         
-                        ResultSet rs = stmt.executeQuery();
-                        
-                        while (rs.next()){
-                            int id = rs.getInt("CUSTOMER_ID");
-                            list.add(findCustomer(id));                    
+                        try(ResultSet rs = stmt.executeQuery()){
+                            while (rs.next()){
+                                int id = rs.getInt("CUSTOMER_ID");
+                                list.add(findCustomer(id));                    
+                            }
                         }
-                        
-                        return list;
 
 		} catch (SQLException ex) {
 			Logger.getLogger("DAO").log(Level.SEVERE, null, ex);
 			throw new DAOException(ex.getMessage());
 		}
                 
+                return list;
 
 	}
         
